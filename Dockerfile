@@ -1,6 +1,26 @@
 # Set the base image
 FROM ubuntu:20.04 AS builder
 
+ARG TARGETPLATFORM
+ARG TARGETARCH
+
+# Print out debug info
+RUN printf "I'm building for TARGETPLATFORM=\"${TARGETPLATFORM}\"" && \
+    printf ", TARGETARCH=\"${TARGETARCH}\"\n"  && \
+    printf "With uname -s : " && uname -s && \
+    printf "and  uname -m : " && uname -m && \
+    printf "dpkg architecture: $(dpkg --print-architecture)\n"
+
+RUN if [ -z "${TARGETARCH}" ]; then printf "\n\n**********************************************************************************************\n" && \
+                                    printf "Argument TARGETARCH not set. Please set either of the following:\n" && \
+                                    printf " - enable BuildKit: 'DOCKER_BUILDKIT=1 docker build ...'\n" && \
+                                    printf " - use 'docker buildx build...'\n" && \
+                                    printf " - set TARGETARCH manually while building: 'docker build --build-arg TARGETARCH=amd64 ...'.\n\n" && \
+                                    printf "TARGETARCH can be either amd64 or arm64.\n\n" && \
+                                    printf "**********************************************************************************************\n\n" && \
+                                    exit 1; \
+    fi
+
 # Install linux dependencies
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
