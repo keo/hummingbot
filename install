@@ -18,8 +18,8 @@ fi
 
 CONDA_BIN=$(dirname ${CONDA_EXE})
 MACOS_ENV=setup/environment.yml
-LINUX_ENV=setup/environment-linux.yml
-LINUX_AARCH64_ENV=setup/environment-linux-aarch64.yml
+LINUX_ENV=setup/environment-linux-amd64.yml
+LINUX_AARCH64_ENV=setup/environment-linux-arm64.yml
 WIN64_ENV=setup/environment-win64.yml
 ENV_FILE=$MACOS_ENV
 
