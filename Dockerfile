@@ -50,11 +50,18 @@ ENV PATH=/home/hummingbot/miniconda3/bin:$PATH
 ARG PATH=/home/hummingbot/miniconda3/bin:$PATH
 
 # Install miniconda
-RUN curl https://repo.anaconda.com/miniconda/Miniconda3-py38_4.10.3-Linux-x86_64.sh -o ~/miniconda.sh && \
+RUN case ${TARGETPARCH} in \
+         "amd64")  MINICONDA_ARCH=x86_64  ;; \
+         "arm64")  MINICONDA_ARCH=aarch64  ;; \
+         *)        MINICONDA_ARCH=$(uname -m) ;; \
+    esac && \
+    curl https://repo.anaconda.com/miniconda/Miniconda3-py38_4.10.3-Linux-${MINICONDA_ARCH}.sh -o ~/miniconda.sh && \
     /bin/bash ~/miniconda.sh -b && \
     rm ~/miniconda.sh && \
-    ~/miniconda3/bin/conda update -n base conda -y && \
-    ~/miniconda3/bin/conda clean -tipy
+    conda init bash && \
+    . ~/.bashrc && \
+    conda update -n base conda -y && \
+    conda clean -tipy
 
 # Dropping default ~/.bashrc because it will return if not running as interactive shell, thus not invoking PATH settings
 RUN :> ~/.bashrc
