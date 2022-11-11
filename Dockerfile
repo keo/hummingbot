@@ -78,10 +78,10 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | b
 COPY --chown=hummingbot:hummingbot setup/environment-linux-${TARGETARCH}.yml setup/environment-linux.yml
 
 # ./install | create hummingbot environment
-RUN ~/miniconda3/bin/conda env create -f setup/environment-linux.yml && \
-    ~/miniconda3/bin/conda clean -tipy && \
+RUN conda env create -f setup/environment-linux.yml && \
+    conda clean -tipy && \
     # clear pip cache
-    rm -rf /home/hummingbot/.cache
+    rm -rf ~/.cache
 
 # Copy remaining files
 COPY --chown=hummingbot:hummingbot bin/ bin/
