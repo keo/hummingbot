@@ -65,7 +65,7 @@ RUN case ${TARGETPARCH} in \
 
 
 # Install nvm and CeloCLI; note: nvm adds own section to ~/.bashrc
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash && \
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash && \
     export NVM_DIR="/home/hummingbot/.nvm" && \
     source "/home/hummingbot/.nvm/nvm.sh" && \
     nvm install 10 && \
