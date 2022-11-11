@@ -3,10 +3,17 @@ FROM ubuntu:20.04 AS builder
 
 # Install linux dependencies
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y gcc \
-        build-essential pkg-config libusb-1.0 curl git \
-        sudo && \
-    rm -rf /var/lib/apt/lists/*
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        build-essential \
+        curl \
+        gcc \
+        git \
+        libssl-dev \
+        libudev-dev \
+        libusb-1.0 \
+        pkg-config \
+        sudo \
+    && rm -rf /var/lib/apt/lists/*
 
 # Add hummingbot user and group
 RUN groupadd -g 8211 hummingbot && \
