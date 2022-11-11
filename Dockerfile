@@ -43,6 +43,12 @@ RUN groupadd -g 8211 hummingbot && \
 USER hummingbot:hummingbot
 WORKDIR /home/hummingbot
 
+SHELL [ "/bin/bash", "-lc" ]
+
+# Set path for miniconda
+ENV PATH=/home/hummingbot/miniconda3/bin:$PATH
+ARG PATH=/home/hummingbot/miniconda3/bin:$PATH
+
 # Install miniconda
 RUN curl https://repo.anaconda.com/miniconda/Miniconda3-py38_4.10.3-Linux-x86_64.sh -o ~/miniconda.sh && \
     /bin/bash ~/miniconda.sh -b && \
@@ -54,7 +60,6 @@ RUN curl https://repo.anaconda.com/miniconda/Miniconda3-py38_4.10.3-Linux-x86_64
 RUN :> ~/.bashrc
 
 # Install nvm and CeloCLI; note: nvm adds own section to ~/.bashrc
-SHELL [ "/bin/bash", "-lc" ]
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash && \
     export NVM_DIR="/home/hummingbot/.nvm" && \
     source "/home/hummingbot/.nvm/nvm.sh" && \
