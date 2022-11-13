@@ -1,5 +1,5 @@
 # Set the base image
-FROM ubuntu:20.04 AS builder
+FROM ubuntu:20.04 AS developer
 
 ARG TARGETPLATFORM
 ARG TARGETARCH
@@ -83,6 +83,11 @@ RUN conda env create -f setup/environment-linux.yml && \
     # clear pip cache
     rm -rf ~/.cache
 
+# activate hummingbot env when entering the CT
+RUN echo "conda activate $(head -1 setup/environment-linux.yml | cut -d' ' -f2)" >> ~/.bashrc
+
+FROM developer as builder
+
 # Copy remaining files
 COPY --chown=hummingbot:hummingbot bin/ bin/
 COPY --chown=hummingbot:hummingbot hummingbot/ hummingbot/
@@ -93,8 +98,8 @@ COPY --chown=hummingbot:hummingbot LICENSE .
 COPY --chown=hummingbot:hummingbot README.md .
 COPY --chown=hummingbot:hummingbot DATA_COLLECTION.md .
 
-# activate hummingbot env when entering the CT
-RUN echo "source /home/hummingbot/miniconda3/etc/profile.d/conda.sh && conda activate $(head -1 setup/environment-linux.yml | cut -d' ' -f2)" >> ~/.bashrc
+COPY --chown=hummingbot:hummingbot test/ test/
+COPY --chown=hummingbot:hummingbot Makefile .
 
 # ./compile + cleanup build folder
 RUN /home/hummingbot/miniconda3/envs/$(head -1 setup/environment-linux.yml | cut -d' ' -f2)/bin/python3 setup.py build_ext --inplace -j 8 && \
