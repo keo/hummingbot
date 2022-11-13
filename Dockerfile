@@ -60,8 +60,7 @@ RUN case ${TARGETPARCH} in \
     rm ~/miniconda.sh && \
     conda init bash && \
     . ~/.bashrc && \
-    conda update -n base conda -y && \
-    conda clean -tipy
+    conda update -n base conda -y
 
 
 # Install nvm and CeloCLI; note: nvm adds own section to ~/.bashrc
@@ -69,19 +68,18 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | b
     export NVM_DIR="/home/hummingbot/.nvm" && \
     source "/home/hummingbot/.nvm/nvm.sh" && \
     nvm install 10 && \
-    npm install --only=production -g @celo/celocli@1.0.3 && \
-    nvm cache clear && \
-    npm cache clean --force && \
-    rm -rf /home/hummingbot/.cache
+    npm install --only=production -g @celo/celocli@1.0.3
 
 # Copy environment only to optimize build caching, so changes in sources will not cause conda env invalidation
 COPY --chown=hummingbot:hummingbot setup/environment-linux-${TARGETARCH}.yml setup/environment-linux.yml
 
 # ./install | create hummingbot environment
-RUN conda env create -f setup/environment-linux.yml && \
-    conda clean -tipy && \
-    # clear pip cache
-    rm -rf ~/.cache
+RUN conda env create -f setup/environment-linux.yml
+
+# activate hummingbot env when entering the CT
+RUN echo "conda activate $(head -1 setup/environment-linux.yml | cut -d' ' -f2)" >> ~/.bashrc
+
+FROM developer as builder
 
 # activate hummingbot env when entering the CT
 RUN echo "conda activate $(head -1 setup/environment-linux.yml | cut -d' ' -f2)" >> ~/.bashrc
